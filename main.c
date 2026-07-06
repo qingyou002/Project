@@ -16,7 +16,6 @@ void read_account(char *input_account, char *text_account,char *text_password)
     fp = fopen(file_name, "r");
     if (fp == NULL) {
         perror("failed open file");
-        
     }
 
     // 2. 读取第一行（账号）
@@ -79,6 +78,6 @@ int main()
     // printf("password:%s",password);
     read_account(account,text_account,text_password);
     compare(account,password,text_account,text_password);
-    
+
     return 0;
 }
