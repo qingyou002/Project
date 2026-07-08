@@ -2,14 +2,25 @@
 #include<string.h>
 #define MAX_LEN 100
 
-void register_user(){
+void register_user(void){
     char account[MAX_LEN], password[MAX_LEN];
-    printf("è¯·è¾“å…¥è´¦æˆ·å:");
+    printf("ÇëÊäÈëÕË»§Ãû:");
     scanf("%s",account);
-    printf("è¯·è¾“å…¥å¯†ç :");
+    printf("ÇëÊäÈëÃÜÂë:");
     scanf("%s",password);
-    char file_name[MAX_LEN];//æ–‡ä»¶åå­—
-    // 1. æ‰“å¼€æ–‡ä»¶
+    char file_name[MAX_LEN];//ÎÄ¼şÃû×Ö
+    // 1. ´ò¿ªÎÄ¼ş
     char txt[] = ".txt";
-    FILE *fp = fopen("")
+    //snprintf(file_name, MAX_LEN, "%s.txt", account);
+    strcpy(file_name, account);
+	strcat(file_name, txt);
+    FILE *fp = fopen(file_name,"w");
+    if(!fp){
+        printf("ÎÄ¼ş´ò¿ªÊ§°Ü\n");
+        return;
+    }
+    else printf("×¢²á³É¹¦£¡");
+    fprintf(fp,"%s\n%s\n",account,password);
+    fclose(fp);
 }
+
