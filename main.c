@@ -60,9 +60,17 @@ int main()
                 
                 case 4:{
                     //查阅借阅还书日志
+                    break;
+                }
+
+                case 5:{
+                    //查看所有图书
+                    see_all_books();
+                    break;
                 }
 
                 case 0:{
+                    return 0;
                     break;
                 }
                 default:
@@ -79,19 +87,31 @@ int main()
                 if(compare(account,password,text_account,text_password)==1)
                 break;
             }
-            menu_user_total()
-            
             //登录后界面
+            int temp;
+            menu_user_total();
+            printf("请输入:");
+            scanf("%d",&temp);
+            switch (temp)
+            {
+            case 1:
+                /* code */
+                break;
+            
+            default:
+                break;
+            }
             
         }
         else if(Program_t1==3)
         {
-            
+            //账户注册
+            register_user();
         }
-        else if(Program_t1==4)
+        else if(Program_t1==0)
         {
             printf("程序已退出\n");
-            break;
+            return 0;
         }
         else {
             printf("输入有误，重新输入:");

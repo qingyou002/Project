@@ -8,6 +8,7 @@ void menu_admin_total(void)
     menu_item(2, "删除用户");
     menu_item(3, "添加书本");
     menu_item(4, "查阅借阅");
+    menu_item(5, "查看所有书籍");
     menu_item(0, "退出系统");
 
     menu_end();

@@ -8,7 +8,7 @@ void menulogin(void)
     printf("\t| 1. 管理员登录 \n");
     printf("\t| 2. 用户登录 \n");
     printf("\t| 3. 账户注册 \n");
-    printf("\t| 4. 退出系统 \n");
+    printf("\t| 0. 退出系统 \n");
     printf("\t| ********************* \n");
     printf("\n请输入:");
 }

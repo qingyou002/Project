@@ -9,8 +9,8 @@
 void del_user(char *user_name)
 {
     FILE *fp;
-    char file_name[MAX_LEN];//鏂囦欢鍚嶅瓧
-    // 1. 鎵撳紑鏂囦欢
+    char file_name[MAX_LEN];//文件名字
+    // 1. 打开文件
     char txt[] = ".txt";
     strcpy(file_name,user_name);
     strcat(file_name,txt);
@@ -36,7 +36,7 @@ typedef struct {
     int judge;
 } Book;
 
-// 杩藉姞涓�鏈浘涔﹀埌 CSV 鏂囦欢
+// 追加一本图书到 CSV 文件
 void add_book()
 {
     FILE *fp = fopen("book.csv","a");
@@ -68,39 +68,9 @@ void get_new_book(char *book_name,char *author_name, char *isbn){
     scanf("%s",isbn);
 }
 
-Book* read_books(const char *filename, int *count) {
-    FILE *fp = fopen(filename, "r");
-    if (!fp) {
-        *count = 0;
-        return NULL;
-    }
-    int cap = 16;
-    Book *books = malloc(cap * sizeof(Book));
-    if (!books) {
-        fclose(fp);
-        *count = 0;
-        return NULL;
-    }
-    int n = 0;
-    while (fscanf(fp, "%127[^,],%63[^,],%19[^\n]\n",
-                  books[n].title,
-                  books[n].author,
-                  books[n].isbn) == 3) {
-        n++;
-        if (n >= cap) {
-            cap *= 2;
-            Book *tmp = realloc(books, cap * sizeof(Book));
-            if (!tmp) break;
-            books = tmp;
-        }
-    }
-
-    fclose(fp);
-    *count = n;
-    return books;
-}
-Book* read_book(char *filename,char *book_count)
+Book* read_book(char *book_count)
 {
+    char filename[] = "book.csv";
     FILE *fp = fopen(filename,"r");
     if (!fp) {
         *book_count = 0;
@@ -108,7 +78,7 @@ Book* read_book(char *filename,char *book_count)
     }
 
     int start = 16;
-    Book *books = malloc(start * sizeof(Book));//鍔ㄦ�佹墿瀹圭粨鏋勪綋鏁扮粍
+    Book *books = malloc(start * sizeof(Book));//动态扩容结构体数组
     if (!books) {
         fclose(fp);
         *book_count = 0;
@@ -131,4 +101,19 @@ Book* read_book(char *filename,char *book_count)
     fclose(fp);
     *book_count = n;
     return books;
+}
+
+void see_all_books()
+{
+    int count;
+    Book *list = read_book(&count);
+    if (list) {
+        for (int i = 0; i < count; i++) {
+            printf("%d. 《%s》 by %s  ISBN: %s\n",
+                   i+1, list[i].title, list[i].author, list[i].isbn);
+        }
+        free(list);
+    }
+    printf("按任意键继续\n");
+    getchar();
 }
