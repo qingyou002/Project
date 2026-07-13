@@ -36,6 +36,15 @@ typedef struct {
     int judge;
 } Book;
 
+void get_new_book(char *book_name,char *author_name, char *isbn){
+    printf("Please input new book's name:");
+    scanf("%s",book_name);
+    printf("Please input new book's author_name:");
+    scanf("%s",author_name);
+    printf("Please input new book's isbn:");
+    scanf("%s",isbn);
+}
+
 // 追加一本图书到 CSV 文件
 void add_book()
 {
@@ -59,14 +68,6 @@ void add_book()
     fclose(fp);
 }
 
-void get_new_book(char *book_name,char *author_name, char *isbn){
-    printf("Please input new book's name:");
-    scanf("%s",book_name);
-    printf("Please input new book's author_name:");
-    scanf("%s",author_name);
-    printf("Please input new book's isbn:");
-    scanf("%s",isbn);
-}
 
 Book* read_book(char *book_count)
 {

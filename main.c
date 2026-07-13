@@ -1,8 +1,6 @@
 #include<stdio.h>
-#include"menulogin.h"
-#include"Visual_user.h"
 #include"login.h"
-#include"Visual_admin.h"
+#include"menu.h"
 #include"book.h"
 #include"register.h"
 
@@ -97,8 +95,12 @@ int main()
             case 1:
                 /* code */
                 break;
+            case 2:
+
+                break;
             
             default:
+                printf(" ‰»Î”–ŒÛ");
                 break;
             }
             
