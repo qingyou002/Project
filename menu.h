@@ -53,8 +53,10 @@ void menu_admin_total(void)
     menu_item(1, "添加用户");
     menu_item(2, "删除用户");
     menu_item(3, "添加书本");
-    menu_item(4, "查阅借阅");
+    menu_item(4, "查阅借阅");//
     menu_item(5, "查看所有书籍");
+    menu_item(6, "修改管理员密码");
+
     menu_item(0, "退出系统");
 
     menu_end();
@@ -64,8 +66,9 @@ void menu_admin_total(void)
 void menu_user_total(void)
 {
     menu_begin("学校图书管理系统");
-    menu_item(1, "搜索书本");
-    menu_item(2, "个人借阅查询");
+    menu_item(1, "搜索书本");//
+    menu_item(2, "个人借阅查询");//
+    menu_item(3, "修改个人密码");
     menu_item(0, "退出管理系统");
     menu_end();
 }

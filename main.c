@@ -3,7 +3,7 @@
 #include"menu.h"
 #include"book.h"
 #include"register.h"
-
+#include"Change_Password.h"
 
 int main()
 {
@@ -67,6 +67,10 @@ int main()
                     break;
                 }
 
+                case 6:{
+                    Change_Password();
+                    break;
+                }
                 case 0:{
                     return 0;
                     break;
@@ -95,10 +99,16 @@ int main()
             case 1:
                 /* code */
                 break;
-            case 2:
+            case 2:{
+                //个人借阅查询（借了哪些书）
+            }
 
                 break;
-            
+            case 3:{
+                 Change_Password();
+                 break;
+            }
+
             default:
                 printf("输入有误");
                 break;

@@ -20,6 +20,7 @@ typedef struct{
 
 Book Books[MAX_BOOK];
 int book_count=0;
+
 typedef struct{
     long id,bookId;
     char borrower[NAME_LEN];
