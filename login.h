@@ -8,11 +8,13 @@ void read_account(char *input_account, char *text_account,char *text_password)//
     char account[MAX_LEN];
     char password[MAX_LEN];
     char file_name[MAX_LEN];//文件名字
+    char total_file_name[MAX_LEN]={"account/"};
     // 1. 打开文件
     char txt[] = ".txt";
     strcpy(file_name,input_account);
     strcat(file_name,txt);
-    fp = fopen(file_name, "r");
+    strcat(total_file_name,file_name);
+    fp = fopen(total_file_name, "r");
     if (fp == NULL) {
         perror("failed open file");
     }

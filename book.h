@@ -10,18 +10,21 @@ void del_user(char *user_name)
 {
     FILE *fp;
     char file_name[MAX_LEN];//文件名字
+    char total_file_name[MAX_LEN]={"account/"};
     // 1. 打开文件
     char txt[] = ".txt";
     strcpy(file_name,user_name);
     strcat(file_name,txt);
-    fp = fopen(file_name, "r");
+    strcat(total_file_name,file_name);
+    puts(total_file_name);
+    fp = fopen(total_file_name, "r");
     if (fp == NULL) {
         perror("failed open file\n");
         printf("fail to del user\n");
     }
     else{
         fclose(fp);
-        if(remove(file_name)==0)
+        if(remove(total_file_name)==0)
         {
             printf("del success\n");
         }

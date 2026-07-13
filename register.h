@@ -4,6 +4,7 @@
 
 void register_user(void){
     char account[MAX_LEN], password[MAX_LEN];
+    char total_file_name[MAX_LEN]={"account/"};
     printf("请输入账户名:");
     scanf("%s",account);
     printf("请输入密码:");
@@ -14,7 +15,8 @@ void register_user(void){
     //snprintf(file_name, MAX_LEN, "%s.txt", account);
     strcpy(file_name, account);
 	strcat(file_name, txt);
-    FILE *fp = fopen(file_name,"w");
+    strcat(total_file_name,file_name);
+    FILE *fp = fopen(total_file_name,"w");
     if(!fp){
         printf("文件打开失败\n");
         return;
