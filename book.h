@@ -38,9 +38,9 @@ typedef struct {
     char author[MAX_AUTHOR];
     int total;
     int borrowed;
-} Book;
+} addBook;
 
-void get_new_book(Book *book){
+void get_new_book(addBook *book){
     printf("Please input new book's isbn:");
     scanf("%19s", book->isbn);
     printf("Please input new book's name:");
@@ -60,7 +60,7 @@ void add_book()
         perror("fail to open books.txt\n");
         return ;
     }
-    Book book;
+    addBook book;
     get_new_book(&book);
     fprintf(fp, "%s|%s|%s|%d|%d\n", book.isbn, book.title, book.author, book.total, book.borrowed);
     fclose(fp);

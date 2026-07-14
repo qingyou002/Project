@@ -1,32 +1,30 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "login.h"
-#include "menu.h"
-
-#define Book CsvBook
-#include "book.h"//包含
-#undef Book
-
 #include "register.h"//注册
 #include "Change_Password.h"//修改密码
 #include "borrow_book.h"//借书模块
+#include "login.h"
+#include "menu.h"
+#include "book.h"//包含
 
-static void clear_line_after_scanf(void)//清除缓冲区的\n
+
+
+void clear_line_after_scanf(void)//清除缓冲区的\n
 {
     int ch;
     while ((ch = getchar()) != '\n' && ch != EOF) {
     }
 }
 
-static void show_admin_borrow_records(void)//给管理员 展示借阅日志的全部
+void show_admin_borrow_records(void)//给管理员 展示借阅日志的全部
 {
     int recIdx[MAX_RECORD];
     int count = getUserRecords(NULL, -1, recIdx);
     showRecordList(recIdx, count, 0);
 }
 
-static void show_user_records_menu(const char account[])//展示个人的借阅记录
+void show_user_records_menu(const char account[])//展示个人的借阅记录菜单
 {
     int recIdx[MAX_RECORD];
     int count;
@@ -70,7 +68,7 @@ static void show_user_records_menu(const char account[])//展示个人的借阅记录
     }
 }
 
-static void search_books_from_input(void)
+void search_books_from_input(void)
 {
     char keyword[256];
 
@@ -88,7 +86,7 @@ static void search_books_from_input(void)
     }
 }
 
-static void admin_loop_integrated(void)
+void admin_loop_integrated(void)
 {
     while (1) {
         menu_admin_total();
@@ -141,7 +139,7 @@ static void admin_loop_integrated(void)
     }
 }
 
-static void user_loop_integrated(const char account[])
+void user_loop_integrated(const char account[])
 {
     while (1) {
         int temp;
