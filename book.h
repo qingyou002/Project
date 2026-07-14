@@ -33,91 +33,35 @@ void del_user(char *user_name)
 }
 
 typedef struct {
+    char isbn[ISBN_LEN];
     char title[MAX_TITLE];
     char author[MAX_AUTHOR];
-    char isbn[ISBN_LEN];
-    int judge;
+    int total;
+    int borrowed;
 } Book;
 
-void get_new_book(char *book_name,char *author_name, char *isbn){
-    printf("Please input new book's name:");
-    scanf("%s",book_name);
-    printf("Please input new book's author_name:");
-    scanf("%s",author_name);
+void get_new_book(Book *book){
     printf("Please input new book's isbn:");
-    scanf("%s",isbn);
+    scanf("%19s", book->isbn);
+    printf("Please input new book's name:");
+    scanf("%127s", book->title);
+    printf("Please input new book's author_name:");
+    scanf("%63s", book->author);
+    printf("Please input new book's total:");
+    scanf("%d", &book->total);
+    book->borrowed = 0;
 }
 
 // 追加一本图书到 CSV 文件
 void add_book()
 {
-    FILE *fp = fopen("book.csv","a");
+    FILE *fp = fopen("books.txt","a");
     if(!fp){
-        perror("fail to open book.csv\n");
+        perror("fail to open books.txt\n");
         return ;
     }
-    char book_name[MAX_TITLE];
-    char author_name[MAX_AUTHOR];
-    char isbn[ISBN_LEN];
-    get_new_book(book_name,author_name,isbn);
     Book book;
-    strncpy(book.title, book_name, MAX_TITLE - 1);
-    book.title[MAX_TITLE - 1] = '\0';
-    strncpy(book.author, author_name, MAX_AUTHOR - 1);
-    book.author[MAX_AUTHOR - 1] = '\0';
-    strncpy(book.isbn, isbn, ISBN_LEN - 1);
-    book.isbn[ISBN_LEN - 1] = '\0';
-    fprintf(fp, "%s,%s,%s,%d\n", book.title, book.author, book.isbn,1);
+    get_new_book(&book);
+    fprintf(fp, "%s|%s|%s|%d|%d\n", book.isbn, book.title, book.author, book.total, book.borrowed);
     fclose(fp);
-}
-
-
-Book* read_book(int *book_count)
-{
-    char filename[] = "book.csv";
-    FILE *fp = fopen(filename,"r");
-    if (!fp) {
-        *book_count = 0;
-        return NULL;
-    }
-
-    int start = 16;
-    Book *books = malloc(start * sizeof(Book));//动态扩容结构体数组
-    if (!books) {
-        fclose(fp);
-        *book_count = 0;
-        return NULL;
-    }
-    int n = 0;
-    while (fscanf(fp, "%127[^,],%63[^,],%19[^\n]\n",
-                  books[n].title,
-                  books[n].author,
-                  books[n].isbn) == 3) {
-        n++;
-        if (n >= start) {
-            start *= 2;
-            Book *tmp = realloc(books, start * sizeof(Book));
-            if (!tmp) break;
-            books = tmp;
-        }
-    }
-
-    fclose(fp);
-    *book_count = n;
-    return books;
-}
-
-void see_all_books()
-{
-    int count;
-    Book *list = read_book(&count);
-    if (list) {
-        for (int i = 0; i < count; i++) {
-            printf("%d. 《%s》 by %s  ISBN: %s\n",
-                   i+1, list[i].title, list[i].author, list[i].isbn);
-        }
-        free(list);
-    }
-    printf("按任意键继续\n");
-    getchar();
 }

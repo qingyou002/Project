@@ -56,7 +56,6 @@ void menu_admin_total(void)
     menu_item(4, "查阅借阅");//
     menu_item(5, "查看所有书籍");
     menu_item(6, "修改管理员密码");
-
     menu_item(0, "退出系统");
 
     menu_end();

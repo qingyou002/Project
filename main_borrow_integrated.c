@@ -5,12 +5,12 @@
 #include "menu.h"
 
 #define Book CsvBook
-#include "book.h"
+#include "book.h"//包含
 #undef Book
 
-#include "register.h"
-#include "Change_Password.h"
-#include "borrow_book.h"
+#include "register.h"//注册
+#include "Change_Password.h"//修改密码
+#include "borrow_book.h"//借书模块
 
 static void clear_line_after_scanf(void)
 {
