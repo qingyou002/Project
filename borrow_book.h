@@ -183,11 +183,15 @@ int showBookList(int match[], int matchCount, int showIndex){
             printf("按 Enter 键进入下一页，按 q 退出分页：");
             int ch = getchar();
             if(ch == 'q' || ch == 'Q'){
-                while(ch != '\n' && ch != EOF);
+                while(ch != '\n' && ch != EOF){
+                    ch = getchar();
+                }
                 break;
             }
             if(ch != '\n'){
-                while(ch != '\n' && ch != EOF);
+                while(ch != '\n' && ch != EOF){
+                    ch = getchar();
+                }
             }
             currentPage++;
         }else{
@@ -301,18 +305,24 @@ int showRecordList(int recIdx[], int recCountList, int showIndex){
         if(currentPage < totalPage - 1){
             printf("按 Enter 键进入下一页，按 q 退出分页：");
             int ch = getchar();
-            if(ch == 'q' || ch == 'Q'){
-                while(ch != '\n' && ch != EOF);
-                break;
+            if (ch == 'q' || ch == 'Q') {
+            while (ch != '\n' && ch != EOF) {
+                ch = getchar();
             }
-            if(ch != '\n'){
-                while(ch != '\n' && ch != EOF);
-            }
-            currentPage++;
-        }else{
-            printf("已经是最后一页。\n");
-            break;
+            break;  // 退出外层循环
         }
+
+        if (ch != '\n') {
+            while (ch != '\n' && ch != EOF) {
+                ch = getchar();
+            }
+        }
+
+        currentPage++;
+    } else {
+        printf("已经是最后一页。\n");
+        break;
+    }
     }
     return recCountList;
 }
@@ -528,3 +538,26 @@ void renewBook(char borrower[]){
     printf("新的应还日期：%d-%02d-%02d\n", r->dueDate.year, r->dueDate.month, r->dueDate.day);
 }
 
+// ========== 自动检测逾期 ==========
+// 遍历所有借阅记录，若已超过应还日期且尚未归还，则标记为逾期(status=2)
+// 返回本次新标记为逾期的记录数量
+int checkOverdue(void) {
+    Date now = today();
+    int newOverdue = 0;
+
+    for (int i = 0; i < recCount; i++) {
+        // 只检查状态为"已借出"的记录
+        if (recs[i].status != 0) continue;
+
+        // 当前日期 > 应还日期 → 逾期
+        if (diffDays(recs[i].dueDate, now) > 0) {
+            recs[i].status = 2;
+            newOverdue++;
+        }
+    }
+
+    if (newOverdue > 0) {
+        saveAll();  // 状态更新
+    }
+    return newOverdue;
+}
