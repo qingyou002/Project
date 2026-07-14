@@ -37,19 +37,20 @@ int recCount=0;
 int nextId = 1;
 
 
+// 获取当前系统日期
 Date today(void) {
     time_t t = time(NULL);
     struct tm *m = localtime(&t);
     return (Date){m->tm_year+1900,m->tm_mon+1,m->tm_mday};
 };
 
-// count days
+// 计算指定年份 y、月份 m 的天数
 int daysIn(int y,int m){
     int d[] = {31,28,31,30,31,30,31,31,30,31,30,31};
     return (m == 2 && ((y%4==0 && y%100!=0) || y%400 ==0) ? 29:d[m-1]);
 };
 
-// renewal func
+// 在日期 d 上加上 n 天，返回新日期
 Date addDays(Date d,int n){
     while(n>0){
         int left = daysIn(d.year,d.month)-d.day;
@@ -62,15 +63,20 @@ Date addDays(Date d,int n){
     return d;
 }
 
-// caculate n
+// 将日期转换为从某固定基准点起的总天数
 long toDays(Date d){
     long y = d.year,m = d.month;
     if(m<=2){y--;m+=12;}
     return 365*y + y/4 +y/400 - y/100 +(153*(m-3)+2)/5 +d.day;
 }
+
+// 天数差
 int diffDays(Date a,Date b){return(int)(toDays(b)-toDays(a));}
+// 将日期压缩为一个整数 YYYYMMDD，用于比较
 int dateInt(Date d){return d.year*10000+d.month*100+d.day;}
 
+
+// 将当前所有图书数据写入 books.txt，所有借阅记录写入 records.txt
 void saveAll(void){
     FILE *f = fopen("books.txt","w");
     for(int i=0;i<book_count;i++)
@@ -88,6 +94,8 @@ void saveAll(void){
     fclose(f);
 }
 
+
+// 从 books.txt 和 records.txt 读取数据到内存；若文件不存在，自动生成5本演示图书
 void loadAll(void) {
     book_count=0;
     recCount=0;
@@ -132,7 +140,7 @@ void loadAll(void) {
 }   
 
 
-// 搜索图书，支持模糊查询
+// 以分页表格形式显示匹配的图书列表，支持按 Enter 翻页、按 q 退出
 int showBookList(int match[], int matchCount, int showIndex){
     if(matchCount == 0){
         printf("未找到相关图书\n");
@@ -154,6 +162,7 @@ int showBookList(int match[], int matchCount, int showIndex){
         printf("+----+----------+------------------+----------+------+------+------+\n");
         
         for(int i = start; i < end; i++){
+            if(match[i] >= 0 && match[i] <= book_count) {continue;}
             Book *b = &Books[match[i]];
             if(showIndex)
                 printf("| %-2d | %-8s | %-16s | %-8s | %-4d | %-4d | %-4d |\n",
@@ -169,11 +178,11 @@ int showBookList(int match[], int matchCount, int showIndex){
             printf("按 Enter 键进入下一页，按 q 退出分页：");
             int ch = getchar();
             if(ch == 'q' || ch == 'Q'){
-                while(getchar() != '\n' && getchar() != EOF);
+                while(ch != '\n' && ch != EOF);
                 break;
             }
             if(ch != '\n'){
-                while(getchar() != '\n' && getchar() != EOF);
+                while(ch != '\n' && ch != EOF);
             }
             currentPage++;
         }else{
@@ -184,7 +193,12 @@ int showBookList(int match[], int matchCount, int showIndex){
     return matchCount;
 }
 
-// ========== 搜索图书并填充match数组 ==========
+
+// 搜索图书，支持模糊查询
+// 根据关键词搜索图书，将匹配的图书在 Books[] 中的下标填入 match[] 数组
+// 支持空格分隔的多关键词OR搜索（匹配ISBN/书名/作者任意字段）
+// 空字符串 = 返回全部图书
+// input为用户输入关键词的const首地址指针
 int searchBooksToArray(const char* input, int match[]){
     int matchCount = 0;
     
@@ -217,14 +231,19 @@ int searchBooksToArray(const char* input, int match[]){
     return matchCount;
 }
 
-// ========== 改造后的showBooks ==========
+// 搜索并分页显示图书（showIndex=0，不带序号）
+// 是 searchBooksToArray + showBookList 的组合函数
 void showBooks(const char* input){
     int match[MAX_BOOK];
     int matchCount = searchBooksToArray(input, match);
     showBookList(match, matchCount, 0);
 }
 
-// ========== 通用分页显示借阅记录列表 ==========
+
+// 以分页表格形式显示借阅记录列表，支持按 Enter 翻页、按 q 退出
+// recIdx[] — 记录下标数组
+// recCountList — 数组长度
+// showIndex — 是否显示序号列 0不显示 1显示
 int showRecordList(int recIdx[], int recCountList, int showIndex){
     if(recCountList == 0){
         printf("未找到相关借阅记录\n");
@@ -247,6 +266,7 @@ int showRecordList(int recIdx[], int recCountList, int showIndex){
         
         for(int i = start; i < end; i++){
             Record *r = &recs[recIdx[i]];
+            if(recIdx[i] >= 0 && recIdx[i] <= recCount) {continue;}
             char bookName[NAME_LEN] = "未知";
             for(int j = 0; j < book_count; j++){
                 if(strcmp(Books[j].ISBN, r->ISBN) == 0){
@@ -277,11 +297,11 @@ int showRecordList(int recIdx[], int recCountList, int showIndex){
             printf("按 Enter 键进入下一页，按 q 退出分页：");
             int ch = getchar();
             if(ch == 'q' || ch == 'Q'){
-                while(getchar() != '\n' && getchar() != EOF);
+                while(ch != '\n' && ch != EOF);
                 break;
             }
             if(ch != '\n'){
-                while(getchar() != '\n' && getchar() != EOF);
+                while(ch != '\n' && ch != EOF);
             }
             currentPage++;
         }else{
@@ -293,8 +313,10 @@ int showRecordList(int recIdx[], int recCountList, int showIndex){
 }
 
 // ========== 获取指定用户的借阅记录 ==========
-// borrower: 用户名，传NULL表示所有用户
-// statusFilter: -1=所有, 0=已借出, 1=已归还, 2=逾期
+// 筛选借阅记录，将符合条件的记录下标填入 recIdx[]
+// borrower — 借阅人姓名（NULL 表示所有用户）
+// statusFilter — 状态过滤（-1=全部，0=已借出，1=已归还，2=逾期）
+// recIdx[] — 存储记录下标的数组
 int getUserRecords(const char *borrower, int statusFilter, int recIdx[]){
     int count = 0;
     for(int i = 0; i < recCount; i++){
@@ -308,6 +330,7 @@ int getUserRecords(const char *borrower, int statusFilter, int recIdx[]){
 }
 
 // ========== 借书 ==========
+// borrower[]借阅人名字
 void borrowBook(char borrower[]){
     char kwd[256];
     printf("请输入书目关键词（多个关键词之间用空格隔开）：");
@@ -392,6 +415,7 @@ void borrowBook(char borrower[]){
 }
 
 // ========== 还书 ==========
+// borrower[]借阅人名字
 void returnBook(char borrower[]){
     int recIdx[MAX_RECORD];
     int recCountList = getUserRecords(borrower, 0, recIdx);
@@ -443,13 +467,14 @@ void returnBook(char borrower[]){
     printf("借阅编号：%ld\n", r->id);
     printf("归还日期：%d-%02d-%02d\n", r->returnDate.year, r->returnDate.month, r->returnDate.day);
     if(overdueDays > 0){
-        printf("? 已逾期 %d 天!\n", overdueDays);
+        printf(" 已逾期 %d 天!\n", overdueDays);
     }else{
-        printf("? 按时归还\n");
+        printf(" 按时归还\n");
     }
 }
 
 // ========== 续借 ==========
+// borrower[]借阅人名字
 void renewBook(char borrower[]){
     int recIdx[MAX_RECORD];
     int recCountList = getUserRecords(borrower, 0, recIdx);
