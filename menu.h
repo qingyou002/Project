@@ -53,10 +53,10 @@ void menu_admin_total(void)
     menu_item(1, "添加用户");
     menu_item(2, "删除用户");
     menu_item(3, "添加书本");
-    menu_item(4, "查阅借阅");//
+    menu_item(4, "查阅全部借阅记录");//
     menu_item(5, "查看所有书籍");
     menu_item(6, "修改管理员密码");
-
+    menu_item(7, "刷新借阅记录");
     menu_item(0, "退出系统");
 
     menu_end();
@@ -66,10 +66,24 @@ void menu_admin_total(void)
 void menu_user_total(void)
 {
     menu_begin("学校图书管理系统");
-    menu_item(1, "搜索书本");//
-    menu_item(2, "个人借阅查询");// 
+    menu_item(1, "借书");//
+    menu_item(2, "个人借阅查询");//等下不用了 
     menu_item(3, "归还");//
     menu_item(4, "修改个人密码");
+    menu_item(5, "续借");
+    menu_item(6, "展示书库所有书");
+    menu_item(7, "搜书");
     menu_item(0, "退出管理系统");
     menu_end();
+}
+
+void user_records_menu()
+{
+    printf("\n\n");
+    menu_item(1, "当前借阅记录");//
+    menu_item(2, "还书情况查询");//
+    menu_item(3, "逾期书目查询");//
+    menu_item(4, "我的全部借阅记录");//
+    menu_item(0, "退出登录");//
+
 }
