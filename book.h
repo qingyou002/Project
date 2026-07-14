@@ -72,7 +72,7 @@ void add_book()
 }
 
 
-Book* read_book(char *book_count)
+Book* read_book(int *book_count)
 {
     char filename[] = "book.csv";
     FILE *fp = fopen(filename,"r");

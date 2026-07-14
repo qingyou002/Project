@@ -89,6 +89,8 @@ void saveAll(void){
 }
 
 void loadAll(void) {
+    book_count=0;
+    recCount=0;
     FILE *f; char line[256];
     f = fopen("books.txt","r");
     if (!f) {
@@ -310,7 +312,7 @@ void borrowBook(char borrower[]){
     char kwd[256];
     printf("请输入书目关键词（多个关键词之间用空格隔开）：");
     fgets(kwd, 256, stdin);
-    kwd[strcspn(kwd, '\n')] = '\0';
+    kwd[strcspn(kwd, "\n")] = '\0';
     
     if(kwd[0] == '\0'){
         printf("关键词不能为空！\n");
