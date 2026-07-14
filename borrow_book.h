@@ -4,8 +4,8 @@
 #include <time.h>
 //#include <bits/stdc++>
 
-#define MAX_BOOK 100
-#define MAX_RECORD 1000
+#define MAX_BOOK 10000
+#define MAX_RECORD 100000
 #define NAME_LEN 64
 #define MAX_BOOK_ID 20
 #define MAX_PAGE_ITEMS 50
@@ -54,7 +54,7 @@ int daysIn(int y,int m){
 Date addDays(Date d,int n){
     while(n>0){
         int left = daysIn(d.year,d.month)-d.day;
-        if(left>n){d.day += n;n=0;}
+        if(left>=n){d.day += n;n=0;}
         else{
             n -= left+1;d.day = 1,d.month++;
             if(d.month>=13){ d.month = 1;d.year++;}
@@ -79,6 +79,10 @@ int dateInt(Date d){return d.year*10000+d.month*100+d.day;}
 // 将当前所有图书数据写入 books.txt，所有借阅记录写入 records.txt
 void saveAll(void){
     FILE *f = fopen("books.txt","w");
+    if(f==NULL){
+        printf("book.txt文件打开失败");
+        return;
+    }
     for(int i=0;i<book_count;i++)
         fprintf(f,"%s|%s|%s|%d|%d\n",Books[i].ISBN,Books[i].name,Books[i].author,Books[i].total,Books[i].borrowed);
     fclose(f);
@@ -99,6 +103,7 @@ void saveAll(void){
 void loadAll(void) {
     book_count=0;
     recCount=0;
+    nextId=1;
     FILE *f; char line[256];
     f = fopen("books.txt","r");
     if (!f) {
@@ -165,10 +170,10 @@ int showBookList(int match[], int matchCount, int showIndex){
             if(match[i] >= 0 && match[i] <= book_count) {continue;}
             Book *b = &Books[match[i]];
             if(showIndex)
-                printf("| %-2d | %-8s | %-16s | %-8s | %-4d | %-4d | %-4d |\n",
+                printf("| %-2d | %-20s | %-20s | %-20s | %-4d | %-4d | %-4d |\n",
                     i + 1, b->ISBN, b->name, b->author, b->total, b->borrowed, b->total - b->borrowed);
             else
-                printf("| %-8s | %-16s | %-8s | %-4d | %-4d | %-4d |\n",
+                printf("| %-20s | %-20s | %-20s | %-4d | %-4d | %-4d |\n",
                     b->ISBN, b->name, b->author, b->total, b->borrowed, b->total - b->borrowed);
         }
         printf("+----+----------+------------------+----------+------+------+------+\n");
@@ -394,8 +399,8 @@ void borrowBook(char borrower[]){
     
     Record *r = &recs[recCount];
     r->id = nextId++;
-    strcpy(r->ISBN, selected->ISBN);
-    strcpy(r->borrower, borrower);
+    strncpy(r->ISBN, selected->ISBN,MAX_BOOK_ID);
+    strncpy(r->borrower, borrower,NAME_LEN);
     r->borrowDate = today();
     r->dueDate = addDays(r->borrowDate, 30);
     r->returnDate = (Date){0, 0, 0};
@@ -515,10 +520,11 @@ void renewBook(char borrower[]){
     }
     
     r->dueDate = addDays(r->dueDate, 30);
-    
-    saveAll();
+    r->status=0;
+    saveAl1();
     
     printf("\n续借成功!\n");
     printf("借阅编号：%ld\n", r->id);
     printf("新的应还日期：%d-%02d-%02d\n", r->dueDate.year, r->dueDate.month, r->dueDate.day);
 }
+
