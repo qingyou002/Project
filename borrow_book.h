@@ -150,7 +150,7 @@ int showBookList(int match[], int matchCount, int showIndex){
         if(showIndex)
             printf("| 序号 |   编号   |      书  名      |   作 者  | 总库 | 已借 | 可借 |\n");
         else
-            printf("|   编号   |      书  名      |   作 者  | 总库 | 已借 | 可借 |\n");
+            printf("|         编号         |             书  名             |   作 者  | 总库 | 已借 | 可借 |\n");
         printf("+----+----------+------------------+----------+------+------+------+\n");
         
         for(int i = start; i < end; i++){
@@ -159,7 +159,7 @@ int showBookList(int match[], int matchCount, int showIndex){
                 printf("| %-2d | %-8s | %-16s | %-8s | %-4d | %-4d | %-4d |\n",
                     i + 1, b->ISBN, b->name, b->author, b->total, b->borrowed, b->total - b->borrowed);
             else
-                printf("| %-8s | %-16s | %-8s | %-4d | %-4d | %-4d |\n",
+                printf("| %-20s | %-30s | %-s | %-4d | %-4d | %-4d |\n",
                     b->ISBN, b->name, b->author, b->total, b->borrowed, b->total - b->borrowed);
         }
         printf("+----+----------+------------------+----------+------+------+------+\n");
