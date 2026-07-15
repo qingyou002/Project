@@ -57,6 +57,7 @@ void menu_admin_total(void)
     menu_item(5, "查看所有书籍");
     menu_item(6, "修改管理员密码");
     menu_item(7, "刷新借阅记录");
+    menu_item(8,"借阅排行榜");
     menu_item(0, "退出系统");
 
     menu_end();
@@ -66,14 +67,15 @@ void menu_admin_total(void)
 void menu_user_total(void)
 {
     menu_begin("学校图书管理系统");
-    menu_item(1, "借书");//
-    menu_item(2, "个人借阅查询");//等下不用了 
-    menu_item(3, "归还");//
+    menu_item(1, "借书");
+    menu_item(2, "个人借阅查询");
+    menu_item(3, "归还");
     menu_item(4, "修改个人密码");
     menu_item(5, "续借");
     menu_item(6, "展示书库所有书");
     menu_item(7, "搜书");
-    menu_item(0, "退出管理系统");
+    menu_item(8, "借阅排行榜");
+    menu_item(0, "退出登录");
     menu_end();
 }
 

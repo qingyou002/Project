@@ -1,134 +1,246 @@
-#include<stdio.h>
-#include"login.h"
-#include"menu.h"
-#include"book.h"
-#include"register.h"
-#include"Change_Password.h"
+#include <stdio.h>
+#include <string.h>
 
-int main()
+#include "register.h"//注册
+#include "Change_Password.h"//修改密码
+#include "borrow_book(4).h"//借书模块
+#include "login.h"
+#include "menu.h"
+#include "book.h"//包含
+
+
+
+void clear_line_after_scanf(void)//清除缓冲区的\n
 {
-    int Program_t1;
-    while(1)//总体程序循环
-    {
-        Program_t1=0;
-        menulogin();
-        scanf("%d",&Program_t1);
+    int ch;
+    while ((ch = getchar()) != '\n' && ch != EOF) {
+    }
+}
 
-        char account[MAX_LEN];
-        char password[MAX_LEN];//分别为用户输入的账号密码
-        char text_account[MAX_LEN];
-        char text_password[MAX_LEN];//分别为文档内的账号密码
+void show_admin_borrow_records(void)//给管理员 展示借阅日志的全部
+{
+    int recIdx[MAX_RECORD];
+    int count = getUserRecords(NULL, -1, recIdx);
+    showRecordList(recIdx, count, 0);
+}
 
-        if(Program_t1==1)
-        {
-            //管理员登录
-            while(1){
-                login(account, password);
-                read_account(account,text_account,text_password);
-                if(compare(account,password,text_account,text_password)==1)
-                break;
-            }
-            
-            //登录后
-            while(1)
-            {
-                menu_admin_total();
-                char user_name[MAX_LEN];
-                int temp;
-                printf("请输入：");
-                scanf("%d",&temp);
-                switch (temp)
-                {
-                case 1:{
-                    register_user();
-                    break;
+void show_user_records_menu(const char account[])//展示个人的借阅记录菜单
+{
+    int recIdx[MAX_RECORD];
+    int count;
+    user_records_menu();
+    printf("Please input: ");
 
-                }
-                case 2:{
-                    printf("删除的用户名:");
-                    scanf("%s",user_name);
-                    del_user(user_name);
-                    break;
+    int choice;
+    if (scanf("%d", &choice) != 1) {
+        clear_line_after_scanf();
+        printf("Invalid input.\n");
+        return;
+    }
+    clear_line_after_scanf();
 
-                }
-                case 3:{
-                    //添加书本
-                    add_book();
-                }
-                
-                case 4:{
-                    //查阅借阅还书日志
-                    break;
-                }
+    switch (choice) {
+    case 1:
+        printf("当前借阅书本:\n");
+        count = getUserRecords(account, 0, recIdx);//
+        showRecordList(recIdx, count, 0);
+        break;
+    case 2:
+        printf("已经还的书本:\n");
+        count = getUserRecords(account, 1, recIdx);
+        showRecordList(recIdx, count, 0);
+        break;
+    case 3:
+        checkOverdue();
+        printf("已逾期书本:\n");
+        count = getUserRecords(account, 2, recIdx);
+        showRecordList(recIdx, count, 0);
+        break;
+    case 4:
+        printf("历史全部借阅记录:\n\n");
+        count = getUserRecords(account, -1, recIdx);
+        showRecordList(recIdx, count, 0);
+        break;
+    case 0:
+        break;
+    default:
+        printf("Invalid option.\n");
+        break;
+    }
+}
 
-                case 5:{
-                    //查看所有图书
-                    see_all_books();
-                    break;
-                }
+void search_books_from_input(void)
+{
+    char keyword[256];
 
-                case 6:{
-                    Change_Password();
-                    break;
-                }
-                case 0:{
-                    return 0;
-                    break;
-                }
-                default:
-                    break;
-                }
-            }
+    printf("Please input book keyword, or press Enter to show all: ");
+    if (fgets(keyword, sizeof(keyword), stdin) == NULL) {
+        showBooks(NULL);
+        return;
+    }
+    keyword[strcspn(keyword, "\n")] = '\0';
+
+    if (keyword[0] == '\0') {
+        showBooks(NULL);
+    } else {
+        showBooks(keyword);
+    }
+}
+
+void admin_loop_integrated(void)
+{
+    while (1) {
+        menu_admin_total();
+        
+
+        char user_name[MAX_LEN];
+        int temp;
+        printf("Please input: ");
+        if (scanf("%d", &temp) != 1) {
+            clear_line_after_scanf();
+            printf("Invalid input.\n");
+            continue;
         }
-        else if(Program_t1==2)
-        {
-            //用户登录
-            while(1){
-                login(account, password);
-                read_account(account,text_account,text_password);
-                if(compare(account,password,text_account,text_password)==1)
-                break;
-            }
-            //登录后界面
-            int temp;
-            menu_user_total();
-            printf("请输入:");
-            scanf("%d",&temp);
-            switch (temp)
-            {
-            case 1:
-                /* code */
-                break;
-            case 2:{
-                //个人借阅查询（借了哪些书）
-            }
+        clear_line_after_scanf();
 
-                break;
-            case 3:{
-                 Change_Password();
-                 break;
-            }
-
-            default:
-                printf("输入有误");
-                break;
-            }
-            
-        }
-        else if(Program_t1==3)
-        {
-            //账户注册
+        switch (temp) {
+        case 1:
             register_user();
-        }
-        else if(Program_t1==0)
-        {
-            printf("程序已退出\n");
-            return 0;
-        }
-        else {
-            printf("输入有误，重新输入:");
+            break;
+        case 2:
+            printf("Delete user name: ");
+            scanf("%99s", user_name);
+            clear_line_after_scanf();
+            del_user(user_name);
+            break;
+        case 3:
+            add_book();
+            clear_line_after_scanf();
+            loadAll();
+            break;
+        case 4:
+            show_admin_borrow_records();
+            break;
+        case 5:
+            showBooks(NULL);
+            break;
+        case 6:
+            Change_Password();
+            clear_line_after_scanf();
+            break;
+        case 7:
+            loadAll();
+            break;
+        case 8:
+            showBookRanking();
+            break;
+        case 0:
+            return;
+        default:
+            printf("Invalid option.\n");
+            break;
         }
     }
-    
-    return 0;
+}
+
+void user_loop_integrated(const char account[])
+{
+    while (1) {
+        int temp;
+
+        menu_user_total();
+        
+        printf("Please input: ");
+
+        if (scanf("%d", &temp) != 1) {
+            clear_line_after_scanf();
+            printf("Invalid input.\n");
+            continue;
+        }
+        clear_line_after_scanf();
+
+        switch (temp) {
+        case 1:
+            borrowBook((char *)account);
+            break;
+        case 2:
+            show_user_records_menu(account);
+            break;
+        case 4:
+            Change_Password();
+            clear_line_after_scanf();
+            break;
+        case 3:
+            returnBook((char *)account);
+            break;
+        case 5:
+            renewBook((char *)account);
+            break;
+        case 6:
+            showBooks(NULL);
+            break;
+        case 7:
+            search_books_from_input();
+            break;
+        case 8:
+            showBookRanking();
+            break;
+        case 0:
+            return;
+        default:
+            printf("Invalid option.\n");
+            break;
+        }
+    }
+}
+
+int main(void)
+{
+    int Program_t1;
+
+    loadAll();
+
+    while (1) {
+        char account[MAX_LEN];
+        char password[MAX_LEN];
+        char text_account[MAX_LEN];
+        char text_password[MAX_LEN];
+
+        Program_t1 = 0;
+        menulogin();
+        if (scanf("%d", &Program_t1) != 1) {
+            clear_line_after_scanf();
+            printf("Invalid input.\n");
+            continue;
+        }
+        clear_line_after_scanf();
+
+        if (Program_t1 == 1) {
+            while (1) {
+                login(account, password);
+                read_account(account, text_account, text_password);
+                if (compare(account, password, text_account, text_password) == 1) {
+                    break;
+                }
+            }
+            admin_loop_integrated();
+        } else if (Program_t1 == 2) {
+            while (1) {
+                login(account, password);
+                read_account(account, text_account, text_password);
+                if (compare(account, password, text_account, text_password) == 1) {
+                    break;
+                }
+            }
+            user_loop_integrated(account);
+        } else if (Program_t1 == 3) {
+            register_user();
+            clear_line_after_scanf();
+        } else if (Program_t1 == 0) {
+            printf("Exit system.\n");
+            return 0;
+        } else {
+            printf("Invalid option.\n");
+        }
+    }
 }
