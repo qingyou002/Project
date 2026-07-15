@@ -3,7 +3,7 @@
 
 #include "register.h"//注册
 #include "Change_Password.h"//修改密码
-#include "borrow_book(4).h"//借书模块
+#include "borrow_book.h"//借书模块
 #include "login.h"
 #include "menu.h"
 #include "book.h"//包含
