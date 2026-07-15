@@ -16,7 +16,6 @@ void del_user(char *user_name)
     strcpy(file_name,user_name);
     strcat(file_name,txt);
     strcat(total_file_name,file_name);
-    puts(total_file_name);
     fp = fopen(total_file_name, "r");
     if (fp == NULL) {
         perror("failed open file\n");
