@@ -219,15 +219,25 @@ int showBookList(int match[], int matchCount, int showIndex) {
 
         if (currentPage < totalPage - 1) {
             printf("按 Enter 键进入下一页，按 q 退出分页：");
-            int ch = getchar();
-            if (ch == 'q' || ch == 'Q') {
-                while (getchar() != '\n' && getchar() != EOF);
+            int ch;
+            while (1) {
+                ch = getchar();
+                if (ch == '\n') {                   
+                    currentPage++;
+                    break;                          
+                } else if (ch == 'q' || ch == 'Q' || ch == EOF) {
+                    int c;
+                    while ((c = getchar()) != '\n' && c != EOF); 
+                    break;
+                } else {
+                    int c;
+                    while ((c = getchar()) != '\n' && c != EOF);
+                    printf("输入无效，请按 Enter 进入下一页，或按 q 退出：");
+                }
+            }
+            if (ch == 'q' || ch == 'Q' || ch == EOF) {
                 break;
             }
-            if (ch != '\n') {
-                while (getchar() != '\n' && getchar() != EOF);
-            }
-            currentPage++;
         } else {
             printf("已经是最后一页。\n");
             break;
@@ -607,16 +617,26 @@ int showRecordList(int recIdx[], int recCountList, int showIndex) {
 
         if (currentPage < totalPage - 1) {
             printf("按 Enter 键进入下一页，按 q 退出分页：");
-            int ch = getchar();
-            if (ch == 'q' || ch == 'Q') {
-                while (getchar() != '\n' && getchar() != EOF);
+            int ch;
+            while (1) {
+                ch = getchar();
+                if (ch == '\n') {                   
+                    currentPage++;
+                    break;                          
+                } else if (ch == 'q' || ch == 'Q' || ch == EOF) {
+                    int c;
+                    while ((c = getchar()) != '\n' && c != EOF); 
+                    break;
+                } else {
+                    int c;
+                    while ((c = getchar()) != '\n' && c != EOF);
+                    printf("输入无效，请按 Enter 进入下一页，或按 q 退出：");
+                }
+            }
+            if (ch == 'q' || ch == 'Q' || ch == EOF) {
                 break;
             }
-            if (ch != '\n') {
-                while (getchar() != '\n' && getchar() != EOF);
-            }
-            currentPage++;
-        } else {
+        }else {
             printf("已经是最后一页。\n");
             break;
         }
@@ -862,3 +882,6 @@ int checkOverdue(void) {
     }
     return newOverdue;
 }
+
+
+
