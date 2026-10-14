@@ -12,30 +12,25 @@
 #include "Change_Password.h"//修改密码
 #include "borrow_book.h"//借书模块
 
-static void clear_line_after_scanf(void)
+static void clear_line_after_scanf(void)//清除缓冲区的\n
 {
     int ch;
     while ((ch = getchar()) != '\n' && ch != EOF) {
     }
 }
 
-static void show_admin_borrow_records(void)
+static void show_admin_borrow_records(void)//给管理员 展示借阅日志的全部
 {
     int recIdx[MAX_RECORD];
     int count = getUserRecords(NULL, -1, recIdx);
     showRecordList(recIdx, count, 0);
 }
 
-static void show_user_records_menu(const char account[])
+static void show_user_records_menu(const char account[])//展示个人的借阅记录
 {
     int recIdx[MAX_RECORD];
     int count;
-
-    printf("\n1. Current borrowed records\n");
-    printf("2. Returned records\n");
-    printf("3. Overdue records\n");
-    printf("4. All my records\n");
-    printf("0. Back\n");
+    user_records_menu();
     printf("Please input: ");
 
     int choice;
@@ -48,18 +43,22 @@ static void show_user_records_menu(const char account[])
 
     switch (choice) {
     case 1:
-        count = getUserRecords(account, 0, recIdx);
+        printf("当前借阅书本:\n");
+        count = getUserRecords(account, 0, recIdx);//
         showRecordList(recIdx, count, 0);
         break;
     case 2:
+        printf("已经还的书本:\n");
         count = getUserRecords(account, 1, recIdx);
         showRecordList(recIdx, count, 0);
         break;
     case 3:
+        printf("已逾期书本:\n");
         count = getUserRecords(account, 2, recIdx);
         showRecordList(recIdx, count, 0);
         break;
     case 4:
+        printf("历史全部借阅记录:\n\n");
         count = getUserRecords(account, -1, recIdx);
         showRecordList(recIdx, count, 0);
         break;
@@ -93,9 +92,7 @@ static void admin_loop_integrated(void)
 {
     while (1) {
         menu_admin_total();
-        printf("\t| 7. Borrow-system book list\n");
-        printf("\t| 8. Borrow-system record list\n");
-        printf("\t| 9. Reload borrow-system files\n");
+        
 
         char user_name[MAX_LEN];
         int temp;
@@ -120,24 +117,19 @@ static void admin_loop_integrated(void)
         case 3:
             add_book();
             clear_line_after_scanf();
+            loadAll();
             break;
         case 4:
             show_admin_borrow_records();
             break;
         case 5:
-            see_all_books();
+            showBooks(NULL);
             break;
         case 6:
             Change_Password();
             clear_line_after_scanf();
             break;
         case 7:
-            showBooks(NULL);
-            break;
-        case 8:
-            show_admin_borrow_records();
-            break;
-        case 9:
             loadAll();
             break;
         case 0:
@@ -155,10 +147,7 @@ static void user_loop_integrated(const char account[])
         int temp;
 
         menu_user_total();
-        printf("\t| 4. Return book\n");
-        printf("\t| 5. Renew book\n");
-        printf("\t| 6. Show all borrow-system books\n");
-        printf("\t| 7. Search borrow-system books\n");
+        
         printf("Please input: ");
 
         if (scanf("%d", &temp) != 1) {
@@ -175,11 +164,11 @@ static void user_loop_integrated(const char account[])
         case 2:
             show_user_records_menu(account);
             break;
-        case 3:
+        case 4:
             Change_Password();
             clear_line_after_scanf();
             break;
-        case 4:
+        case 3:
             returnBook((char *)account);
             break;
         case 5:

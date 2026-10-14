@@ -4,7 +4,7 @@
 #include <time.h>
 //#include <bits/stdc++>
 
-#define MAX_BOOK 100
+#define MAX_BOOK 1000
 #define MAX_RECORD 1000
 #define NAME_LEN 64
 #define MAX_BOOK_ID 20
@@ -53,7 +53,7 @@ int daysIn(int y,int m){
 Date addDays(Date d,int n){
     while(n>0){
         int left = daysIn(d.year,d.month)-d.day;
-        if(left>n){d.day += n;n=0;}
+        if(left>=n){d.day += n;n=0;}
         else{
             n -= left+1;d.day = 1,d.month++;
             if(d.month>=13){ d.month = 1;d.year++;}
@@ -225,7 +225,7 @@ void showBooks(const char* input){
 }
 
 // ========== 通用分页显示借阅记录列表 ==========
-int showRecordList(int recIdx[], int recCountList, int showIndex){
+int showRecordList(int recIdx[], int recCountList, int showIndex){//管理员查看所有的借阅记录
     if(recCountList == 0){
         printf("未找到相关借阅记录\n");
         return 0;
@@ -443,9 +443,9 @@ void returnBook(char borrower[]){
     printf("借阅编号：%ld\n", r->id);
     printf("归还日期：%d-%02d-%02d\n", r->returnDate.year, r->returnDate.month, r->returnDate.day);
     if(overdueDays > 0){
-        printf("? 已逾期 %d 天!\n", overdueDays);
+        printf(" 已逾期 %d 天!\n", overdueDays);
     }else{
-        printf("? 按时归还\n");
+        printf(" 按时归还\n");
     }
 }
 
